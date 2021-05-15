@@ -1,11 +1,13 @@
 // router.js
 
 export const router = {};
+let headerText = document.querySelector("header h1");
+let entryPage = document.querySelector("entry-page");
 
 /**
  * Changes the "page" (state) that your SPA app is currently set to
  */
-router.setState = function() {
+router.setState = function(obj, go) {
   /**
    * - There are three states that your SPA app will have
    *    1. The home page
@@ -35,4 +37,46 @@ router.setState = function() {
    *    1. You may add as many helper functions in this file as you like
    *    2. You may modify the parameters of setState() as much as you like
    */
+  if (obj.state == "home") { 
+    
+    if (go) {
+      history.pushState(obj, '', ' ');
+    } //else history.replaceState(obj, '', ' ');  
+    
+    document.body.setAttribute('class', '');
+    headerText.innerHTML = "Journal Entries";
+  } 
+  
+  else if (obj.state == "entry") {
+    if (go) {
+      history.pushState(obj, '', '#entry' + obj.count);
+    } //else history.replaceState(obj, '', '#entry' + obj.count);
+    
+    document.body.setAttribute('class', 'single-entry');
+
+    // clear the image and audio in entryPage
+    let image = entryPage.shadowRoot.querySelector("img");
+    let audio = entryPage.shadowRoot.querySelector("audio");    
+    if (image !== null) image.remove();
+    if(audio !== null) audio.remove();
+
+    // adds new header
+    headerText.innerHTML = "Entry " + obj.count;
+
+    // add new entry
+    let element = document.querySelector('journal-entry[count=\"'+obj.count+'\"]');
+    entryPage.entry = element.entry;
+  } 
+  
+  else if (obj.state == "settings") {
+    if (go) {
+      history.pushState(obj, '', '#settings');  
+    } //else history.pushState(obj, '', '#settings');         
+    
+    document.body.setAttribute('class', 'settings');
+    headerText.innerHTML = "Settings";
+  }
 }
+
+
+
